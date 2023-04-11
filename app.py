@@ -14,5 +14,13 @@ app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgresql://postgr
 def home():
     return send_from_directory('build', 'index.html')
 
+@app.route('/static/js/<path:path>')
+def serve_static_js(path):
+    return send_from_directory('build/static/js', path)
+
+@app.route('/static/css/<path:path>')
+def serve_static_css(path):
+    return send_from_directory('build/static/css', path)
+
 if __name__ == '__main__':
     app.run(debug=True)
