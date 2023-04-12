@@ -1,6 +1,6 @@
 // categories.js
 
-const baseUrl = "http://localhost:3000";
+const baseUrl = "http://localhost:5000";
 
 const getCategories = async () => {
   const response = await fetch(`${baseUrl}/categories`);

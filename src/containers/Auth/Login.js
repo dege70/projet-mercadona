@@ -37,6 +37,7 @@ const Login = () => {
             placeholder="Entrer utilisateur"
             value={username}
             onChange={e => setUsername(e.target.value)}
+            autocomplete="username"
           />
         </div>
         <div className="form-group">
@@ -48,6 +49,7 @@ const Login = () => {
             placeholder="Entrer mot de passe"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            autocomplete="current-password"
           />
         </div>
         {error && <div className="alert alert-danger">{error}</div>}
