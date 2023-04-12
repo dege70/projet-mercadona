@@ -2,9 +2,11 @@
 import os
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask_cors import CORS
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
+CORS(app)
 app.config['JSON_SORT_KEYS'] = False
 
 # Configuration de la base de données

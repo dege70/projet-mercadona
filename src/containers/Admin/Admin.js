@@ -19,29 +19,29 @@ const Admin = () => {
     <div className="container">
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
-          <Link to="/admin/products" className={activeTab('/admin/products')}>
+          <Link to={`${process.env.REACT_APP_BASE_URL}/admin/products`} className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/products`)}>
             Produits
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/admin/categories" className={activeTab('/admin/categories')}>
+          <Link to={`${process.env.REACT_APP_BASE_URL}/admin/categories`} className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/categories`)}>
             Catégories
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/admin/promotions" className={activeTab('/admin/promotions')}>
+          <Link to={`${process.env.REACT_APP_BASE_URL}/admin/promotions`} className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/promotions`)}>
             Promotions
           </Link>
         </li>
       </ul>
       <div className="tab-content">
-        <div className={activeTab('/admin/products')}>
+        <div className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/products`)}>
           <ProductForm />
         </div>
-        <div className={activeTab('/admin/categories')}>
+        <div className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/categories`)}>
           <CategoryForm />
         </div>
-        <div className={activeTab('/admin/promotions')}>
+        <div className={activeTab(`${process.env.REACT_APP_BASE_URL}/admin/promotions`)}>
           <PromotionForm />
         </div>
       </div>
