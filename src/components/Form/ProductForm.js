@@ -32,7 +32,7 @@ const ProductForm = ({ product }) => {
   useEffect(() => {
     if (product) {
       reset(product);
-      setSelectedCategory(product.categoryId);
+      setSelectedCategory(product.idcategorie);
     }
   }, [product, reset]);
 
@@ -40,7 +40,7 @@ const ProductForm = ({ product }) => {
     setIsLoading(true);
     try {
       if (product) {
-        await updateProduct(product.id, data);
+        await updateProduct(product.idproduit, data);
       } else {
         await createProduct(data);
       }
@@ -54,56 +54,54 @@ const ProductForm = ({ product }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label htmlFor="name">Nom</label>
+        <label htmlFor="libelle">Libellé</label>
         <input
           type="text"
-          id="name"
-          {...register("name", { required: true })}
+          id="libelle"
+          {...register("libelle", { required: true })}
         />
-        {errors.name && <span>Ce champ est obligatoire</span>}
+        {errors.libelle && <span>Ce champ est obligatoire</span>}
       </div>
       <div>
         <label htmlFor="description">Description</label>
         <textarea
           id="description"
-          {...register("description", { required: true })}
+          {...register("description")}
         />
-        {errors.description && <span>Ce champ est obligatoire</span>}
       </div>
       <div>
-        <label htmlFor="price">Prix</label>
+        <label htmlFor="prix">Prix</label>
         <input
           type="number"
-          id="price"
-          {...register("price", { required: true, min: 0 })}
+          id="prix"
+          {...register("prix", { required: true, min: 0 })}
         />
-        {errors.price && <span>Le prix doit être supérieur ou égal à 0</span>}
+        {errors.prix && <span>Le prix doit être supérieur ou égal à 0</span>}
       </div>
       <div>
         <label htmlFor="image">Image</label>
         <input
           type="text"
           id="image"
-          {...register("image", { required: true })}
+          {...register("image")}
         />
-        {errors.image && <span>Ce champ est obligatoire</span>}
       </div>
       <div>
-        <label htmlFor="categoryId">Catégorie</label>
+        <label htmlFor="idCategorie">Catégorie</label>
         <select
-          id="categoryId"
-          {...register("categoryId", { required: true })}
+          id="idCategorie"
+          {...register("idCategorie", { required: true })}
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
           <option value="">Choisissez une catégorie</option>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.label}
+            <option key={category.idcategorie} value={category.idcategorie}>
+              {category.libelle}
             </option>
           ))}
         </select>
-        {errors.categoryId && <span>Ce champ est obligatoire</span>}
+        {errors.idcategorie && <span>Ce champ est obligatoire</span>}
       </div>
       <button type="submit" disabled={isLoading}>
         {isLoading ? "Chargement..." : "Enregistrer"}

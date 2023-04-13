@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../services/auth';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [motDePasse, setMotDePasse] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -16,11 +16,11 @@ const Login = () => {
     setError(null);
 
     try {
-      await login(username, password);
+      await login(email, motDePasse);
       setLoading(false);
       navigate('/admin');
     } catch (error) {
-      setError("Nom d'utilisateur où mot de passe incorrect");
+      setError("Adresse email ou mot de passe incorrect");
       setLoading(false);
     }
   };
@@ -29,26 +29,26 @@ const Login = () => {
     <div className="Login">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="username">Utilisateur</label>
+          <label htmlFor="email">Adresse Email</label>
           <input
-            type="text"
+            type="email"
             className="form-control"
-            id="username"
-            placeholder="Entrer utilisateur"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            autoComplete="username"
+            id="email"
+            placeholder="Entrez votre adresse email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            autoComplete="email"
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Mot de Passe</label>
+          <label htmlFor="motDePasse">Mot de Passe</label>
           <input
             type="password"
             className="form-control"
-            id="password"
-            placeholder="Entrer mot de passe"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            id="motDePasse"
+            placeholder="Entrez votre mot de passe"
+            value={motDePasse}
+            onChange={e => setMotDePasse(e.target.value)}
             autoComplete="current-password"
           />
         </div>
@@ -58,7 +58,7 @@ const Login = () => {
           className="btn btn-primary"
           disabled={isLoading}
         >
-          {isLoading ? 'Chargement...' : 'Connecter'}
+          {isLoading ? 'Chargement...' : 'Se connecter'}
         </button>
       </form>
     </div>

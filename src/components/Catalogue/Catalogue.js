@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/auth';
-import { getProducts } from '../services/products';
+import { getProducts } from '../services/product';
 import { getCategories } from '../services/categories';
 import CategoryFilter from '../components/Catalogue/CategoryFilter';
 import ProductList from '../components/Catalogue/ProductList';
@@ -16,6 +16,7 @@ const Catalogue = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('Fetching products and categories...');
         const productsData = await getProducts();
         setProducts(productsData);
 
@@ -23,6 +24,7 @@ const Catalogue = () => {
         setCategories(categoriesData);
 
         setIsLoading(false);
+        console.log('Finished fetching products and categories');
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -43,6 +45,8 @@ const Catalogue = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  console.log('Rendering Catalogue component');
 
   return (
     <>

@@ -6,9 +6,9 @@ import { addPromotion } from '../../services/promotions';
 const PromotionForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    discount: '',
-    start_date: '',
-    end_date: ''
+    pourcentage: '',
+    dateDebut: '',
+    dateFin: ''
   });
 
   const navigate = useNavigate();
@@ -48,10 +48,10 @@ const PromotionForm = () => {
           <Form.Label>Réduction (en %)</Form.Label>
           <Form.Control
             type="number"
-            name="discount"
+            name="pourcentage"
             min={0}
             max={100}
-            value={formData.discount}
+            value={formData.pourcentage}
             onChange={handleChange}
             required
           />
@@ -60,8 +60,8 @@ const PromotionForm = () => {
           <Form.Label>Date de début</Form.Label>
           <Form.Control
             type="date"
-            name="start_date"
-            value={formData.start_date}
+            name="dateDebut"
+            value={formData.dateDebut}
             onChange={handleChange}
             required
           />
@@ -70,8 +70,8 @@ const PromotionForm = () => {
           <Form.Label>Date de fin</Form.Label>
           <Form.Control
             type="date"
-            name="end_date"
-            value={formData.end_date}
+            name="dateFin"
+            value={formData.dateFin}
             onChange={handleChange}
             required
           />
