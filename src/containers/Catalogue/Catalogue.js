@@ -6,7 +6,7 @@ import Loading from "../../components/Shared/Loading";
 import Error from "../../components/Error/Error";
 
 const Catalogue = () => {
-  const { data: products, isLoading, error } = useFetch("/api/products");
+  const { data: products, isLoading, error } = useFetch("api/products");
 
   const [category, setCategory] = React.useState("");
 

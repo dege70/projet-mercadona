@@ -1,6 +1,8 @@
 # import des modules
 import os
 
+from database import get_categories, get_products, get_promotions
+
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_cors import CORS
 
@@ -17,20 +19,25 @@ app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgresql://postgr
 def home():
     return send_from_directory('build', 'index.html')
 
+# Route pour la page du catalogue
+@app.route('/catalogue')
+def catalogue():
+    return send_from_directory('build', 'index.html')
+
 # Route pour les catégories
 @app.route('/api/categories')
-def get_categories():
-    return jsonify(categories.get_categories())
+def get_categories_route():
+    return jsonify(get_categories())
 
 # Route pour les produits
-@app.route('/api/product')
-def get_products():
-    return jsonify(product.get_products())
+@app.route('/api/products')
+def get_products_route():
+    return jsonify(get_products())
 
 # Route pour les promotions
 @app.route('/api/promotions')
-def get_promotions():
-    return jsonify(promotions.get_promotions())
+def get_promotions_route():
+    return jsonify(get_promotions())
 
 # Route pour la page d'administration
 @app.route('/admin')

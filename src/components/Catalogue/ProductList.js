@@ -7,6 +7,10 @@ const ProductList = ({ products, isLoading }) => {
     return <Loading />;
   }
 
+  if (!products || products.length === 0) {
+    return <div>Aucun produit à afficher</div>;
+  }
+
   return (
     <div className="product-list">
       {products.map((product) => (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createProduct, updateProduct } from "../../services/product";
+import { getCategories } from "../../services/categories";
 
 const ProductForm = ({ product }) => {
   const navigate = useNavigate();
@@ -12,10 +13,26 @@ const ProductForm = ({ product }) => {
     reset,
   } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (product) {
       reset(product);
+      setSelectedCategory(product.categoryId);
     }
   }, [product, reset]);
 
@@ -73,11 +90,18 @@ const ProductForm = ({ product }) => {
       </div>
       <div>
         <label htmlFor="categoryId">Catégorie</label>
-        <select id="categoryId" {...register("categoryId", { required: true })}>
+        <select
+          id="categoryId"
+          {...register("categoryId", { required: true })}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
           <option value="">Choisissez une catégorie</option>
-          <option value="1">Fruits et légumes</option>
-          <option value="2">Viandes et poissons</option>
-          <option value="3">Boulangerie et pâtisserie</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.label}
+            </option>
+          ))}
         </select>
         {errors.categoryId && <span>Ce champ est obligatoire</span>}
       </div>

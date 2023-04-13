@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '../config';
 
-export const getCatalog = async () => {
-  const response = await fetch(`${API_BASE_URL}/catalog`);
+export const getCategories = async () => {
+  const response = await fetch(`${API_BASE_URL}/categories`);
   const data = await response.json();
   return data;
 };

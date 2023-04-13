@@ -5,7 +5,7 @@ const Header = ({ isAuthenticated, onLogout }) => {
   return (
     <header>
       <h1>Mercadona</h1>
-      <Navigation />
+      {isAuthenticated && <Navigation onLogout={onLogout} />}
     </header>
   );
 };

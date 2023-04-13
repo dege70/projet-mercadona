@@ -3,12 +3,13 @@ const { API_BASE_URL } = config;
 
 // Récupérer toutes les promotions
 export const getPromotions = async () => {
-  const response = await fetch(`${API_BASE_URL}/promotions`);
-  if (!response.ok) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/promotions`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
     throw new Error("Une erreur est survenue lors de la récupération des promotions");
   }
-  const data = await response.json();
-  return data;
 };
 
 // Récupérer une promotion

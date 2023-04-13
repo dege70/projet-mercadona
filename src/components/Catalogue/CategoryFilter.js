@@ -10,7 +10,7 @@ const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
         onChange={(e) => onSelectCategory(e.target.value)}
       >
         <option value="">Toutes</option>
-        {categories.map((category) => (
+        {categories && categories.length > 0 && categories.map((category) => (
           <option key={category.id} value={category.label}>
             {category.label}
           </option>
