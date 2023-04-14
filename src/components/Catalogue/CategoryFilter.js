@@ -1,15 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const CategoryFilter = ({ categories, selectedCategory }) => {
+const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    navigate(`/admin/catalogue${value ? `?category=${value}` : ""}`);
+    const category = e.target.value;
+    onSelectCategory(category);
+    navigate(`/catalogue${category ? `?category=${category}` : ""}`);
   };
-
-  console.log("selectedCategory: ", selectedCategory);
 
   return (
     <div className="category-filter">

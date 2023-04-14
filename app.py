@@ -1,10 +1,13 @@
 # import des modules
 import os
-
-from database import get_categories, get_products, get_promotions
-
+from datetime import datetime
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_cors import CORS
+from database import (create_category, create_product, create_promotion,
+                      delete_category, delete_product, delete_promotion,
+                      get_categories, get_product, get_products,
+                      get_promotion, get_promotions, update_product,
+                      update_promotion)
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
@@ -22,6 +25,14 @@ def home():
 # Route pour la page du catalogue
 @app.route('/catalogue')
 def catalogue():
+    category = request.args.get('category')
+    products = get_products()
+    if category:
+        try:
+            category_int = int(category)
+            products = [p for p in products if p['idcategorie'] == category_int]
+        except ValueError:
+            pass
     return send_from_directory('build', 'index.html')
 
 # Route pour les catégories
@@ -45,34 +56,49 @@ def admin():
     return send_from_directory('build', 'index.html')
 
 # Route pour le formulaire de création de produit
-@app.route('/admin/product/create')
+@app.route('/admin/product/create', methods=['POST'])
 def create_product():
-    return send_from_directory('build', 'index.html')
+    product = {
+        'libelle': request.form['libelle'],
+        'description': request.form['description'],
+        'prix': float(request.form['prix']),
+        'idcategorie': int(request.form['idcategorie']),
+        'image': request.form['image']
+    }
+    create_product(product)
+    return jsonify({'message': 'Product created successfully!'}), 201
 
 # Route pour le formulaire de modification de produit
-@app.route('/admin/product/<int:id>/edit')
+@app.route('/admin/product/<int:id>/edit', methods=['PUT'])
 def edit_product(id):
-    return send_from_directory('build', 'index.html')
+    product = get_product(id)
+    if not product:
+        return jsonify({'error': 'Product not found!'}), 404
+
+    update_product(id, request.form)
+    return jsonify({'message': 'Product updated successfully!'})
+
+# Route pour la suppression de produit
+@app.route('/admin/product/<int:id>/delete', methods=['DELETE'])
+def delete_product_route(id):
+    product = get_product(id)
+    if not product:
+        return jsonify({'error': 'Product not found!'}), 404
+
+    delete_product(id)
+    return jsonify({'message': 'Product deleted successfully!'})
 
 # Route pour le formulaire de création de promotion
-@app.route('/admin/promotion/create')
+@app.route('/admin/promotion/create', methods=['POST'])
 def create_promotion():
-    return send_from_directory('build', 'index.html')
-
-# Route pour le formulaire de modification de promotion
-@app.route('/admin/promotion/<int:id>/edit')
-def edit_promotion(id):
-    return send_from_directory('build', 'index.html')
-
-# Route pour le formulaire de création de catégorie
-@app.route('/admin/category/create')
-def create_category():
-    return send_from_directory('build', 'index.html')
-
-# Route pour le formulaire de modification de catégorie
-@app.route('/admin/category/<int:id>/edit')
-def edit_category(id):
-    return send_from_directory('build', 'index.html')
+    promotion = {
+        'idproduit': int(request.form['idproduit']),
+        'reduction': float(request.form['reduction']),
+        'datedebut': datetime.strptime(request.form['datedebut'], '%Y-%m-%d'),
+        'datefin': datetime.strptime(request.form['datefin'], '%Y-%m-%d')
+    }
+    create_promotion(promotion)
+    return jsonify({'message': 'Promotion created successfully!'}), 201
 
 # Route pour les fichiers statiques CSS
 @app.route('/static/css/<path:path>')

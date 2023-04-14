@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/auth';
 import { getProducts } from '../services/product';
-import { getCategories } from '../services/categories';
+import { useSearchParams } from 'react-router-dom';
 import CategoryFilter from '../components/Catalogue/CategoryFilter';
 import ProductList from '../components/Catalogue/ProductList';
 import Error from '../../components/Error/Error';
 
 const Catalogue = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const { isAuthenticated } = useAuth();
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Fetching products and categories...');
+        console.log('Fetching products...');
         const productsData = await getProducts();
         setProducts(productsData);
 
-        const categoriesData = await getCategories();
-        setCategories(categoriesData);
-
         setIsLoading(false);
-        console.log('Finished fetching products and categories');
+        console.log('Finished fetching products');
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -34,8 +31,13 @@ const Catalogue = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category'));
+  }, [searchParams]);
+
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
+    setSearchParams({ category: categoryId });
   };
 
   if (!isAuthenticated) {
@@ -51,11 +53,16 @@ const Catalogue = () => {
   return (
     <>
       <CategoryFilter
-        categories={categories}
+        categories={products.reduce((acc, product) => {
+          if (!acc.includes(product.categorie)) {
+            acc.push(product.categorie);
+          }
+          return acc;
+        }, [])}
         onSelectCategory={handleCategorySelect}
         selectedCategory={selectedCategory}
       />
-      <ProductList products={products} selectedCategory={selectedCategory} />
+      <ProductList products={selectedCategory ? products.filter(product => product.categorie === selectedCategory) : products} />
     </>
   );
 };
