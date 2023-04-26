@@ -174,9 +174,9 @@ def get_promotions_route():
     return jsonify(get_promotions())
 
 # Route pour la connexion au formulaire
-@app.route('/loginpage')
-def loginpage():
-    return send_from_directory('build', 'index.html')
+# @app.route('/loginpage')
+# def loginpage():
+#     return send_from_directory('build', 'index.html')
 
 # Route pour la connexion
 @app.route('/dashboard')
