@@ -9,7 +9,6 @@ import Admin from "./containers/Admin/Admin";
 import Login from "./containers/Auth/Login";
 import PrivateRoute from "./components/Shared/PrivateRoute";
 import Error from "./components/Error/Error";
-import AdminList from "./components/Page/AdminList";
 import LoginPage from "./containers/Auth/LoginPage";
 import Connect from "./containers/Admin/Connect";
 import ProductForm from "./components/Form/ProductForm";
@@ -32,7 +31,6 @@ function App() {
               <Route path="/admin/categories" element={<CategoryForm />} exact />
               <Route path="/admin/promotions" element={<PromotionForm />} exact />
               <Route path="/loginpage" element={<LoginPage />} />
-              <Route path="/admin-list" element={<AdminList />} />
               <Route path="*" element={<Error message="404 - Page not found" />} />
             </Routes>
           </Layout> 
