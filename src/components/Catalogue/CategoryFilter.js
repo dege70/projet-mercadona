@@ -1,30 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 const CategoryFilter = ({ categories, selectedCategory, onSelectCategory }) => {
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const category = e.target.value;
-    onSelectCategory(category);
-    navigate(`/catalogue${category ? `?category=${category}` : ""}`);
-  };
-
   return (
     <div className="category-filter">
-      <label htmlFor="category-select">Filtrer par catégorie :</label>
+      <label htmlFor="category-select">Filter par :</label>
       <select
         id="category-select"
-        value={selectedCategory || ""}
-        onChange={handleChange}
+        value={selectedCategory}
+        onChange={(event) => onSelectCategory(event.target.value)}
       >
-        <option value="">Toutes</option>
-        {categories &&
-          categories.map((category) => (
-            <option key={category.idcategorie} value={category.idcategorie}>
-              {category.libelle}
-            </option>
-          ))}
+        <option value="">Toutes les catégories</option>
+        {categories && categories.map((category) => (
+          <option key={category.idcategorie} value={category.idcategorie}>
+            {category.libelle}
+          </option>
+        ))}
       </select>
     </div>
   );

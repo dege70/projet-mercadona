@@ -4,6 +4,7 @@ import CategoryFilter from "./CategoryFilter";
 import Product from "../Product/Product";
 import { getProducts } from "../../services/product";
 import { getCategories } from "../../services/categories";
+import classes from "../Product/Product.module.css"
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -53,10 +54,12 @@ const ProductList = () => {
   const filteredProducts =
     selectedCategory === ""
       ? products
-      : products.filter((product) => product.idcategorie === Number(selectedCategory));
+      : products.filter(
+          (product) => product.idcategorie === Number(selectedCategory)
+        );
 
   return (
-    <>
+    <div className="container">
       <h1>Catalogue</h1>
       <CategoryFilter
         categories={categories}
@@ -65,18 +68,27 @@ const ProductList = () => {
           setSelectedCategory(category);
         }}
       />
+
       {isLoading ? (
         <p>Chargement...</p>
       ) : error ? (
         <p>{error}</p>
+      ) : categories.length === 0 ? (
+        <p>Pas de catégories disponibles</p>
       ) : (
-        <div className="product-list">
+        <ul className={classes.Card}>
           {filteredProducts.map((product) => (
-            <Product key={product.idproduit} product={product} />
+            <Product
+              key={product.idproduit}
+              product={product}
+              category={categories.find(
+                (category) => category.idcategorie === product.idcategorie
+              )}
+            />
           ))}
-        </div>
+        </ul>
       )}
-    </>
+    </div>
   );
 };
 

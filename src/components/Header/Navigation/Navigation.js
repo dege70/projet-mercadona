@@ -1,27 +1,26 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import classes from "./Navigation.module.css";
 
 const Navigation = () => {
   return (
-    <nav className="navigation">
-      <ul>
-        <li>
-          <NavLink exact to="/" activeClassName="active">
-            Accueil
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/catalogue" activeClassName="active">
-            Catalogue
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/admin" activeClassName="active">
-            Administration
-          </NavLink>
-        </li>
-      </ul>
-    </nav>
+    <ul className={classes.Navigation}>
+      <li className={classes.NavigationItem}>
+        <NavLink exact to="/" aria-current="page">
+          Accueil
+        </NavLink>
+      </li>
+      <li className={classes.NavigationItem}>
+        <NavLink to="/catalogue" aria-current="page">
+          Catalogue
+        </NavLink>
+      </li>
+      <li className={classes.NavigationItem}>
+        <NavLink to="/dashboard" aria-current="page">
+          Administration
+        </NavLink>
+      </li>
+    </ul>
   );
 };
 

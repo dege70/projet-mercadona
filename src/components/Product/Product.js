@@ -1,14 +1,16 @@
-import React from 'react';
+import React from "react";
+import classes from "./Product.module.css"
 
-const Product = ({ product }) => {
+const Product = ({ product, category }) => {
   return (
-    <div className="product">
-      <h2>{product.libelle}</h2>
-      <p>{product.description}</p>
-      <p>{product.prix} €</p>
-      {product.image && <img src={`/public/images/${product.image}`} alt={product.libelle} />}
-      <p>Catégorie : {product.idcategorie}</p>
-    </div>
+    <li className={classes.Card}>
+      {product.image && <img src={`http://127.0.0.1:5000/public/images/${product.image}`} alt={product.libelle} />}
+        <h2>{product.libelle}</h2>
+        {category && <p>{category.libelle}</p>}
+        <p>{product.description}</p>
+        <p>{product.prix} €</p>
+        <p>Catégorie : {product.idcategorie}</p>
+    </li>
   );
 };
 

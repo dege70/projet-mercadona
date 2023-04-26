@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { createProduct, updateProduct } from "../../services/product";
 import { getCategories } from "../../services/categories";
+import classes from "../../hoc/Layout/Layout.module.css";
+import Admin from "../../containers/Admin/Admin";
 
 const ProductForm = ({ product }) => {
   const navigate = useNavigate();
@@ -42,9 +44,15 @@ const ProductForm = ({ product }) => {
       if (product) {
         await updateProduct(product.idproduit, data);
       } else {
-        await createProduct(data);
+        await createProduct({
+          libelle: data.libelle,
+          description: data.description,
+          prix: data.prix,
+          image: data.image,
+          idcategorie: data.idcategorie,
+        });
       }
-      navigate("/admin/catalogue");
+      navigate("/admin");
     } catch (error) {
       console.error(error);
       setIsLoading(false);
@@ -52,61 +60,74 @@ const ProductForm = ({ product }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="libelle">Libellé</label>
-        <input
-          type="text"
-          id="libelle"
-          {...register("libelle", { required: true })}
-        />
-        {errors.libelle && <span>Ce champ est obligatoire</span>}
-      </div>
-      <div>
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          {...register("description")}
-        />
-      </div>
-      <div>
-        <label htmlFor="prix">Prix</label>
-        <input
-          type="number"
-          id="prix"
-          {...register("prix", { required: true, min: 0 })}
-        />
-        {errors.prix && <span>Le prix doit être supérieur ou égal à 0</span>}
-      </div>
-      <div>
-        <label htmlFor="image">Image</label>
-        <input
-          type="text"
-          id="image"
-          {...register("image")}
-        />
-      </div>
-      <div>
-        <label htmlFor="idCategorie">Catégorie</label>
-        <select
-          id="idCategorie"
-          {...register("idCategorie", { required: true })}
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">Choisissez une catégorie</option>
-          {categories.map((category) => (
-            <option key={category.idcategorie} value={category.idcategorie}>
-              {category.libelle}
-            </option>
-          ))}
-        </select>
-        {errors.idcategorie && <span>Ce champ est obligatoire</span>}
-      </div>
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Chargement..." : "Enregistrer"}
-      </button>
-    </form>
+    <div className="container">
+      <Admin />
+      <h1>Ajouter un Produit :</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className={classes.FormBox}>
+        <div className={classes.Input}>
+          <label htmlFor="libelle">Libellé</label>
+          <input
+            type="text"
+            name="libelle"
+            id="libelle"
+            {...register("libelle", { required: true })}
+          />
+          {errors.libelle && <span>Ce champ est obligatoire</span>}
+        </div>
+        <div className={classes.Input}>
+          <label htmlFor="description">Description</label>
+          <textarea
+            name="description"
+            id="description"
+            {...register("description")}
+          />
+        </div>
+        <div className={classes.Input}>
+          <label htmlFor="prix">Prix</label>
+          <input
+            type="number"
+            name="prix"
+            step="0.01"
+            id="prix"
+            {...register("prix", {
+              required: true,
+              validate: (value) => !isNaN(parseFloat(value))
+            })}
+          />
+          {errors.prix?.type === "required" && <span>Ce champ est obligatoire</span>}
+          {errors.prix?.type === "validate" && <span>Le prix doit être un nombre valide</span>}
+        </div>
+        <div className={classes.Input}>
+          <label htmlFor="image">Image</label>
+          <input name="image" type="text" id="image" {...register("image")} />
+        </div>
+        <div className={classes.Input}>
+          <label htmlFor="idcategorie">Catégorie</label>
+          <select
+            name="idcategorie"
+            id="idcategorie"
+            {...register("idcategorie", { required: true })}
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">Choisissez une catégorie</option>
+            {categories.map((category) => (
+              <option key={category.idcategorie} value={category.idcategorie}>
+                {category.libelle}
+              </option>
+            ))}
+          </select>
+          {errors.idcategorie && <span>Ce champ est obligatoire</span>}
+        </div>
+        <div className={classes.submit}>
+          <input
+            type="submit"
+            disabled={isLoading}
+            value={isLoading ? "Chargement..." : "Enregistrer"}
+          />
+        </div>
+      </form>
+    </div>
   );
 };
 

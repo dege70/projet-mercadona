@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../services/auth';
-import { getProducts } from '../services/product';
+import { useAuth } from '../../services/auth';
+import { getProducts } from '../../services/products';
 import { useSearchParams } from 'react-router-dom';
-import CategoryFilter from '../components/Catalogue/CategoryFilter';
-import ProductList from '../components/Catalogue/ProductList';
-import Error from '../../components/Error/Error';
+import CategoryFilter from './CategoryFilter';
+import ProductList from './ProductList';
+import Error from '../Error/Error';
 
 const Catalogue = () => {
   const [products, setProducts] = useState([]);
@@ -52,17 +52,17 @@ const Catalogue = () => {
 
   return (
     <>
-      <CategoryFilter
+      {/* <CategoryFilter
         categories={products.reduce((acc, product) => {
-          if (!acc.includes(product.categorie)) {
-            acc.push(product.categorie);
+          if (!acc.includes(product.idcategorie)) {
+            acc.push(product.idcategorie);
           }
           return acc;
         }, [])}
         onSelectCategory={handleCategorySelect}
         selectedCategory={selectedCategory}
-      />
-      <ProductList products={selectedCategory ? products.filter(product => product.categorie === selectedCategory) : products} />
+      /> */}
+      <ProductList products={selectedCategory ? products.filter(product => product.idcategorie === selectedCategory) : products} />
     </>
   );
 };

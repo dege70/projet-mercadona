@@ -1,0 +1,31 @@
+.Card {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 110px;
+  }
+.Card > li {
+flex: 1 0 25%;
+flex-direction: column;
+min-width: 280px;
+/* border: 1px solid #16d9e7; */
+background: white;
+margin: 10px;
+border-radius: 5px;
+padding: 10px 20px;
+box-shadow: 0 1px 10px rgba(0, 0, 0, 0.084);
+}
+.Card h2 {
+margin: 6px auto;
+color: #1126c7;
+}
+.Card p {
+display: block;
+color: #0a0a0a;
+}
+.Card img {
+width: 100%;
+margin: 10px 0;
+border-radius: 15px;
+object-fit: cover;
+box-shadow: 0 1px 10px rgba(0, 0, 0, 0.304);
+}
