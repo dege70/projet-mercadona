@@ -4,15 +4,34 @@ const useFetch = (endpoint) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsAuthenticated(localStorage.getItem('session') === 'true');
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log(`${process.env.REACT_APP_BASE_URL}/${endpoint}`);
+        if (!endpoint) {
+          setIsLoading(false);
+          return;
+        }
+        if (endpoint && !isAuthenticated) {
+          setIsLoading(false);
+          return;
+        }
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/${endpoint}`);
         const json = await response.json();
         setData(json);
+
+        // Récupération des informations de l'utilisateur depuis la réponse du backend
+        const { username } = json;
+        localStorage.setItem('session', true);
+        localStorage.setItem('username', username);
+        console.log("Test dans useFetch : ", localStorage.getItem('username'));
+
         setIsLoading(false);
       } catch (error) {
         setError(error);
@@ -20,9 +39,9 @@ const useFetch = (endpoint) => {
     };
 
     fetchData();
-  }, [endpoint]);
+  }, [endpoint, isAuthenticated]);
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, isAuthenticated };
 };
 
 export default useFetch;

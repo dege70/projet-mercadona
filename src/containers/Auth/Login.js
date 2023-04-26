@@ -1,68 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../services/auth';
+import { useState, useEffect } from "react";
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [motDePasse, setMotDePasse] = useState('');
-  const [isLoading, setLoading] = useState(false);
+const useFetch = (endpoint) => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      await login(email, motDePasse);
-      setLoading(false);
-      navigate('/admin');
-    } catch (error) {
-      setError("Adresse email ou mot de passe incorrect");
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="Login">
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Adresse Email</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            placeholder="Entrez votre adresse email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            autoComplete="email"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="motDePasse">Mot de Passe</label>
-          <input
-            type="password"
-            className="form-control"
-            id="motDePasse"
-            placeholder="Entrez votre mot de passe"
-            value={motDePasse}
-            onChange={e => setMotDePasse(e.target.value)}
-            autoComplete="current-password"
-          />
-        </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Chargement...' : 'Se connecter'}
-        </button>
-      </form>
-    </div>
+  // Récupérer la valeur de isAuthenticated depuis le localStorage ou initialiser à false si non définie
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true" || false
   );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (!endpoint) {
+          setIsLoading(false);
+          return;
+        }
+        console.log(`${process.env.REACT_APP_BASE_URL}/${endpoint}`);
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/${endpoint}`);
+        const json = await response.json();
+        setData(json);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    fetchData();
+  }, [endpoint]);
+
+  // Mettre à jour la valeur de isAuthenticated dans le localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
+
+  return { data, isLoading, error, isAuthenticated, setIsAuthenticated };
 };
 
-export default Login;
+export default useFetch;

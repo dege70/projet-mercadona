@@ -24,7 +24,7 @@ const Catalogue = () => {
 
   return (
     <div className="container">
-      <CategoryFilter value={category} onChange={handleCategoryChange} />
+      {/* <CategoryFilter value={category} onChange={handleCategoryChange} /> */}
       <ProductList products={products} category={category} />
     </div>
   );
