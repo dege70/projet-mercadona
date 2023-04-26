@@ -1,10 +1,9 @@
-import base64
+import psycopg2
 import binascii
 import hashlib
 import logging
 import os
 
-import psycopg2
 from flask import Flask, session
 from flask_cors import CORS
 from psycopg2.extras import RealDictCursor
