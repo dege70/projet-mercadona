@@ -2,9 +2,9 @@ import logging
 import os
 from uuid import uuid4
 
-from database import compare_hashed_passwords, validate_test
-from flask import Blueprint, jsonify, make_response, redirect, request, session, url_for
-from uuid import uuid4
+from database import validate_test
+from flask import (Blueprint, jsonify, make_response, redirect, request,
+                   session, url_for)
 
 # Configure le logger pour enregistrer les messages dans le fichier logs.txt
 logs_dir = os.path.join(os.path.dirname(__file__), 'logs')
