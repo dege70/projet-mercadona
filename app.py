@@ -46,7 +46,7 @@ Session(app)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 # Configuration de la base de données
-app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:Lnaaotco@69!@localhost:5432/mercadona')
+app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgres:// pxnuyiidetfjxu : 80011ba777c6f8e2256ce4d9a65fe47f47e5cebf120a2c0837e3abd072904f98 @ ec2-54-73-22-169.eu-west-1.compute.amazonaws.com : 5432 / d257ultfu65rlp')
 
 # Crée le blueprint d'authentification
 auth_bp = Blueprint('auth', __name__)
