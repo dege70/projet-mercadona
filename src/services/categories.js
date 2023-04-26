@@ -1,27 +1,27 @@
-// categories.js
+import axios from 'axios';
+import config from '../config';
 
-const baseUrl = "http://localhost:5000";
+const baseUrl = `${config.API_BASE_URL}/categories`;
 
-const getCategories = async () => {
-  const response = await fetch(`${baseUrl}/categories`);
+export const getCategories = async () => {
+  const response = await fetch(baseUrl);
   const categories = await response.json();
   return categories;
 };
 
-const addCategory = async (category) => {
-  const response = await fetch(`${baseUrl}/categories`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(category),
-  });
-  const newCategory = await response.json();
-  return newCategory;
+export const addCategory = async (category) => {
+  try {
+    const response = await axios.post(`${config.API_BASE_URL}/admin/categorie/create`, category);
+    console.log(response.data.message);
+    window.location.href = '/admin';
+  } catch (error) {
+    console.error(error);
+    throw new Error("Une erreur est survenue lors de l'ajout de la categorie");
+  }
 };
 
-const updateCategory = async (id, category) => {
-  const response = await fetch(`${baseUrl}/categories/${id}`, {
+export const updateCategory = async (idcategorie, category) => {
+  const response = await fetch(`${baseUrl}/${idcategorie}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -32,12 +32,10 @@ const updateCategory = async (id, category) => {
   return updatedCategory;
 };
 
-const deleteCategory = async (id) => {
-  const response = await fetch(`${baseUrl}/categories/${id}`, {
+export const deleteCategory = async (idcategorie) => {
+  const response = await fetch(`${baseUrl}/${idcategorie}`, {
     method: "DELETE",
   });
   const deletedCategory = await response.json();
   return deletedCategory;
 };
-
-export { getCategories, addCategory, updateCategory, deleteCategory };

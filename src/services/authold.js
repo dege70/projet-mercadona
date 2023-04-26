@@ -1,12 +1,13 @@
-import { requestOptions } from "./api";
+import { API_BASE_URL, requestOptions } from "./api";
 
-export const baseUrl = process.env.REACT_APP_BASE_URL;
-
-export const login = async (email, password) => {
-  const response = await fetch(`${baseUrl}/auth/login`, {
+export const login = async (username, password) => {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     ...requestOptions,
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: new URLSearchParams({
+      'username': username,
+      'password': password
+    })
   });
 
   if (!response.ok) {

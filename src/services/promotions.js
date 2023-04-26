@@ -1,10 +1,10 @@
-import config from "../config";
-const { API_BASE_URL } = config;
+import axios from 'axios';
+import config from '../config';
 
 // Récupérer toutes les promotions
 export const getPromotions = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/promotions`);
+    const response = await fetch(`${config.API_BASE_URL}/promotions`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -14,7 +14,7 @@ export const getPromotions = async () => {
 
 // Récupérer une promotion
 export const getPromotion = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/promotions/${id}`);
+  const response = await fetch(`${config.API_BASE_URL}/promotions/${id}`);
   if (!response.ok) {
     throw new Error("Une erreur est survenue lors de la récupération de la promotion");
   }
@@ -24,23 +24,20 @@ export const getPromotion = async (id) => {
 
 // Ajouter une promotion
 export const addPromotion = async (promotionData) => {
-  const response = await fetch(`${API_BASE_URL}/promotions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(promotionData),
-  });
-  if (!response.ok) {
+  try {
+    const response = await axios.post(`${config.API_BASE_URL}/admin/promotion/create`, promotionData);
+    console.log(response.data.message);
+    window.location.href = '/admin';
+  } catch (error) {
+    console.error(error);
     throw new Error("Une erreur est survenue lors de l'ajout de la promotion");
   }
-  const data = await response.json();
-  return data;
 };
+
 
 // Modifier une promotion
 export const updatePromotion = async (id, promotionData) => {
-  const response = await fetch(`${API_BASE_URL}/promotions/${id}`, {
+  const response = await fetch(`${config.API_BASE_URL}/promotions/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -56,10 +53,12 @@ export const updatePromotion = async (id, promotionData) => {
 
 // Supprimer une promotion
 export const deletePromotion = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/promotions/${id}`, {
+  const response = await fetch(`${config.API_BASE_URL}/promotions/${id}`, {
     method: "DELETE",
   });
   if (!response.ok) {
     throw new Error("Une erreur est survenue lors de la suppression de la promotion");
   }
+  const data = await response.json();
+  return data;
 };

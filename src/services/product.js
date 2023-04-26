@@ -1,4 +1,6 @@
-import { config } from '../config';
+import axios from 'axios';
+import config from '../config';
+
 
 export const getProducts = async () => {
   const response = await fetch(`${config.API_BASE_URL}/products`);
@@ -13,15 +15,13 @@ export const getProductById = async (productId) => {
 };
 
 export const createProduct = async (product) => {
-  const response = await fetch(`${config.API_BASE_URL}/products`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(product),
-  });
-  const data = await response.json();
-  return data;
+  try {
+    const response = await axios.post(`${config.API_BASE_URL}/admin/product/create`, product);
+    console.log(response.data.message);
+    window.location.href = '/admin';
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const updateProduct = async (productId, product) => {
@@ -30,7 +30,7 @@ export const updateProduct = async (productId, product) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(product),
+    body: JSON.stringify(product), // convertir les données en JSON
   });
   const data = await response.json();
   return data;
