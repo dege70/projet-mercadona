@@ -2,13 +2,13 @@ import binascii
 import hashlib
 import logging
 import os
+from datetime import datetime
 
 import psycopg2
 from flask import Flask, session
 from flask_cors import CORS
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
