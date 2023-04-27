@@ -338,4 +338,5 @@ def not_found(error):
 
 if __name__ == '__main__':
     with app.app_context():
+        port = int(os.environ.get('PORT', 5000))
         app.run(debug=True)
