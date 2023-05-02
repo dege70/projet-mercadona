@@ -31,7 +31,7 @@ flask run`
 
 L'application sera accessible à l'adresse **http://localhost:5000**.
 
-##Déploiement
+## Déploiement
 
 Si vous souhaitez déployer l'application sur une plateforme en ligne comme Heroku, voici les étapes à suivre :
 
