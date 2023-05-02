@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { createProduct, updateProduct } from "../../services/product";
 import { getCategories } from "../../services/categories";
 import classes from "../../hoc/Layout/Layout.module.css";
-import Admin from "../../containers/Admin/Admin";
+import Navigation from "../../containers/Admin/Navigation";
 
-const ProductForm = ({ product }) => {
+const ProductForm = ({ product, setShowForm }) => {
   const navigate = useNavigate();
   const {
     register,
@@ -35,6 +35,7 @@ const ProductForm = ({ product }) => {
     if (product) {
       reset(product);
       setSelectedCategory(product.idcategorie);
+      setShowForm(true);
     }
   }, [product, reset]);
 
@@ -48,7 +49,7 @@ const ProductForm = ({ product }) => {
           libelle: data.libelle,
           description: data.description,
           prix: data.prix,
-          image: data.image,
+          image: data.image[0].name,
           idcategorie: data.idcategorie,
         });
       }
@@ -61,7 +62,7 @@ const ProductForm = ({ product }) => {
 
   return (
     <div className="container">
-      <Admin />
+      <Navigation />
       <h1>Ajouter un Produit :</h1>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.FormBox}>
         <div className={classes.Input}>
@@ -99,7 +100,10 @@ const ProductForm = ({ product }) => {
         </div>
         <div className={classes.Input}>
           <label htmlFor="image">Image</label>
-          <input name="image" type="text" id="image" {...register("image")} />
+          <input name="image" 
+            type="file" 
+            id="image"    
+            {...register("image")} />
         </div>
         <div className={classes.Input}>
           <label htmlFor="idcategorie">Catégorie</label>

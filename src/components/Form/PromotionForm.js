@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { addPromotion } from '../../services/promotions';
 import { getProducts } from '../../services/product';
 import classes from "../../hoc/Layout/Layout.module.css";
-import Admin from '../../containers/Admin/Admin';
+import Navigation from '../../containers/Admin/Navigation';
 
 const PromotionForm = () => {
   const [formData, setFormData] = useState({
@@ -74,7 +74,7 @@ const PromotionForm = () => {
 
   return (
     <div className="container">
-      <Admin />
+      <Navigation />
       <h1>Ajouter une Promotion</h1>
       <form onSubmit={handleSubmit} className={classes.FormBox}>
         <div className={classes.Input}>
