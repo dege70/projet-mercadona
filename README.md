@@ -6,6 +6,17 @@ Pour exécuter l'application localement, vous devez d'abord cloner le projet dep
 
 `git clone https://github.com/dege70/projet-mercadona`
 
+Pour créer un nouveau projet React localement, il faut suivre les étapes suivantes:
+
+1. Ouvrir le terminal et se positionner dans le répertoire où vous souhaitez créer le projet.
+2. Exécuter la commande suivante : 
+`npx create-react-app my-app` 
+où **"my-app"** est le nom de votre application. Cela créera un nouveau répertoire appelé "my-app" contenant le projet React.
+3. Une fois que la commande est terminée, se positionner dans le répertoire nouvellement créé : **cd my-app**
+4. Pour lancer l'application localement, exécuter la commande suivante : **npm start**
+
+Notez que vous devez avoir Node.js et NPM installés sur votre machine pour créer et exécuter un projet React localement.
+
 Ensuite, vous devez créer un environnement virtuel pour Python et installer les dépendances à partir du fichier **requirements.txt** :
 
 `python3 -m venv venv
