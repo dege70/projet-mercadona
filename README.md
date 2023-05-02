@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# Application web Mercadona
+Cette application web permet aux utilisateurs de consulter les promotions en cours dans les magasins Mercadona, et aux administrateurs d'ajouter des produits à la base de données et de créer des promotions pour ces produits. L'application utilise un front-end en React et un back-end en Flask, et utilise une base de données PostgreSQL pour stocker les données.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Installation
+Pour exécuter l'application localement, vous devez d'abord cloner le projet depuis GitHub :
 
-## Available Scripts
+`git clone https://github.com/dege70/projet-mercadona`
 
-In the project directory, you can run:
+Ensuite, vous devez créer un environnement virtuel pour Python et installer les dépendances à partir du fichier **requirements.txt** :
 
-### `npm start`
+`python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Enfin, vous pouvez exécuter l'application en exécutant le fichier **app.py** :
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+`export FLASK_APP=app.py
+export FLASK_ENV=development
+flask run`
 
-### `npm test`
+L'application sera accessible à l'adresse **http://localhost:5000**.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##Déploiement
 
-### `npm run build`
+Si vous souhaitez déployer l'application sur une plateforme en ligne comme Heroku, voici les étapes à suivre :
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Créez un compte sur Heroku et créez un nouveau projet.
+2. Configurez les variables d'environnement pour votre application en utilisant l'interface Heroku ou la ligne de commande Heroku.
+3. Ajoutez les fichiers **Procfile** et **runtime.txt** à la racine de votre projet (voir ci-dessus).
+4. Poussez votre code vers GitHub.
+5. Dans l'interface Heroku, connectez-vous à votre compte GitHub et sélectionnez votre projet.
+6. Activez la fonctionnalité de déploiement automatique pour votre projet et sélectionnez la branche **main**.
+7. Déployez votre application.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Sécurité
+Pour protéger les données de l'application, j'ai utilisé des mesures de sécurité telles que le cryptage des mots de passe. Pour stocker les mots de passe des utilisateurs, j'ai utilisé la méthode de cryptage SHA-256 avec un sel (ou « salt ») aléatoire pour chaque mot de passe. Cette méthode rend les mots de passe stockés plus difficiles à décrypter en cas d'attaque.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+J'ai également mis en place des mesures de sécurité pour protéger les données utilisateur, telles que l'utilisation de HTTPS pour toutes les communications avec le serveur et la mise en place d'un système d'autorisation pour limiter l'accès aux fonctions d'administration de l'application.
 
-### `npm run eject`
+## Architecture
+Le front-end de l'application est construit avec React et utilise une architecture de composants. Les composants sont organisés dans des dossiers en fonction de leur rôle et de leur fonctionnalité.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Le back-end de l'application est construit avec Flask et utilise une architecture en couches. Le code est organisé en modules en fonction de leur rôle dans l'application, tels que l'authentification, la gestion des produits et des promotions, et la gestion de la base de données.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Contact
+Si vous avez des questions ou des commentaires sur cette application, n'hésitez pas à me contacter.
