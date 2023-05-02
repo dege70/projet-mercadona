@@ -29,3 +29,9 @@ border-radius: 15px;
 object-fit: cover;
 box-shadow: 0 1px 10px rgba(0, 0, 0, 0.304);
 }
+
+.NewPrice {
+  font-weight: bold;
+  color: red;
+}
+
