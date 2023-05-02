@@ -28,13 +28,9 @@
     background: #fb743e;
 }
 
-.navlink active:hover,
-.navlink active  {
+.NavActive a:hover,
+.NavActive a[aria-current="page"] {
     background: #fb743e;
-}
-
-.tab-content {
-    min-height : 600px;
 }
 
 .BtnLink {
@@ -50,4 +46,15 @@
 .BtnLink:hover {
     background: #f1f1f1;
     color: #4f0d9f;
+}
+
+.active {
+    background: #fb743e;
+    color: #f1f1;
+    font-weight: bold;
+}
+
+h1  {
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
