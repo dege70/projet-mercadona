@@ -8,7 +8,7 @@ const PrivateRoute = ({ children: Component, ...rest }) => {
   return isAuthenticated ? (
     <Route {...rest} element={Component} />
   ) : (
-    <Navigate to="/loginpage" replace />
+    <Navigate to="/login" replace />
   );
 };
 
