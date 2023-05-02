@@ -3,17 +3,16 @@ import os
 import uuid
 from datetime import datetime
 
-
 from auth import Blueprint, auth_bp, validate_login
 from database import (
     compare_hashed_passwords, connect, create_category, create_product,
-    create_promotion, delete_category, delete_product, delete_promotion,
-    get_categories, get_product, get_products, get_promotion, get_promotions,
-    hash_password, update_product, update_promotion, validate_test, create_promotion_with_product, update_promotion_with_product)
+    create_promotion, create_promotion_with_product, delete_category,
+    delete_product, delete_promotion, get_categories, get_product,
+    get_products, get_promotion, get_promotions, hash_password, update_product,
+    update_promotion, update_promotion_with_product)
 from flask import Flask
 from flask import current_app as app
-from flask import (jsonify, redirect, request, send_from_directory, session,
-                   url_for)
+from flask import (jsonify, redirect, request, send_from_directory, session, url_for)
 from flask_cors import CORS
 from flask_session import Session
 from werkzeug.security import check_password_hash
@@ -51,33 +50,9 @@ app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgres:// pxnuyii
 # Crée le blueprint d'authentification
 auth_bp = Blueprint('auth', __name__)
 
-# # Route pour la page de la page authentification login
-# @auth_bp.route('/auth/login', methods=['POST'])
-# def login():
-#     data = request.json
-#     username = data['username']
-#     password = data['password']
-    
-#     logger.debug(f'username (login view): {username}') 
-
-#     user = validate_user(username, password)
-
-#     logger.debug(f'SELECT * FROM admin WHERE username = "{username}"')
-
-#     if user is None:
-#         logger.debug('Nom d\'utilisateur invalide (app.py)')
-#         return jsonify({'message': 'les informations d\'identification invalides'}), 401
-
-#     if compare_hashed_passwords(user['password'], password, user['salt']):
-#         logger.debug('Connexion avec succès (app.py)')
-#         return jsonify({'message': 'Connexion avec succès (app.py)'}), 200
-#     else:
-#         logger.debug('Mot de passe invalide (app.py)')
-#         return jsonify({'message': 'les informations d\'identification invalides (app.py)'}), 401
-
 # Route pour la page de la page authentification login
-@auth_bp.route('/auth/loginpage', methods=['POST'])
-def loginpage():
+@auth_bp.route('/auth/login', methods=['POST'])
+def login():
     return validate_login()
   
 # Enregistre le blueprint d'authentification
@@ -106,11 +81,11 @@ def add_header(response):
 @app.before_request
 def require_login():
     # Chemins qui ne nécessitent pas d'authentification
-    whitelist = ['/loginpage']
+    whitelist = ['/login']
 
     # Vérification de la présence du nom d'utilisateur dans la session
     if request.path.startswith('/admin') and 'username' not in session and request.path not in whitelist:
-        return redirect(url_for('loginpage'))
+        return redirect(url_for('login'))
 
 
 # @app.after_request
@@ -118,18 +93,6 @@ def require_login():
 #     if 'session_id' in session:
 #         response.headers['Set-Cookie'] = 'session=' + session['session_id'] + 'SamSite=None; Secure; HttpOnly; Path=/'
 #     return response 
-
-
-# Route de test pour la connexion à la page AdminList.js
-@app.route('/api/admins')
-def get_admins():
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM admin')
-    admins = cur.fetchall()
-    cur.close()
-    conn.close()
-    return jsonify(admins)
 
 # Route pour la page d'accueil
 @app.route('/')
@@ -173,10 +136,19 @@ def get_products_route():
 def get_promotions_route():
     return jsonify(get_promotions())
 
-# Route pour la connexion au formulaire
-# @app.route('/loginpage')
-# def loginpage():
-#     return send_from_directory('build', 'index.html')
+# Route du produit ayant une promotion
+@app.route('/api/produits/<int:idproduit>/promotion', methods=['GET'])
+def get_promotion_for_product(idproduit):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute('SELECT promotion.datedebut, promotion.datefin, promotion.pourcentage FROM produit_promotion JOIN promotion ON produit_promotion.idpromotion = promotion.idpromotion WHERE produit_promotion.idproduit = %s', (idproduit,))
+    promotion = cur.fetchone()
+    cur.close()
+    conn.close()
+    if promotion is not None:
+        return jsonify({'promotion': {'pourcentage': promotion[2], 'datedebut': promotion[0], 'datefin': promotion[1]}})
+    else:
+        return jsonify({'promotion': None})
 
 # Route pour la connexion
 @app.route('/dashboard')
@@ -206,11 +178,13 @@ def admin():
         logger.info("Redirection vers /loginpage")
         return redirect('/loginpage')
 
+# Route pour la déconnexion
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect('/')
 
+# Route pour la création de produit
 @app.route('/api/admin/product/create', methods=['POST'])
 def create_product_route():
     data = request.json
@@ -338,5 +312,6 @@ def not_found(error):
 
 if __name__ == '__main__':
     with app.app_context():
+        app.run(debug=True)
         port = int(os.environ.get('PORT', 5000))
         app.run(host='0.0.0.0', port=port)

@@ -18,11 +18,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Configuration de la sortie des logs vers un fichier
-# file_handler = logging.FileHandler('database.log')
-# file_handler.setLevel(logging.INFO)
-# file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-# logger.addHandler(file_handler)
-# Configurer le logger pour enregistrer les messages dans le fichier logs.txt
 logs_dir = os.path.join(os.path.dirname(__file__), 'logs')
 os.makedirs(logs_dir, exist_ok=True)
 logs_path = os.path.join(logs_dir, 'logs.txt')
@@ -54,12 +49,12 @@ def connect():
         
     return conn
 
+# Générer un mot de passe
 # def generate_hashed_password(password):
 #     new_password = generate_password_hash(password, method='sha256', salt_length=16)
 #     logger.info(f'Voici le mot de passe généré pour Lnaho69 : {new_password}')
 #     return new_password.decode("uft-8")
-
-# Appeler la fonction avec le mot de passe 'Lnaho69'
+# # Appeler la fonction avec le mot de passe 'Lnaho69'
 # new_password = generate_hashed_password("Lnaho69")
 # with open('output.txt', 'w') as f:
 #     f.write(new_password)
@@ -78,83 +73,51 @@ def hash_password(password, salt):
     logger.info(f'Voici le resultat de la variable hashed_password_bytes : {hashed_password_bytes} ')
 
     # Encode the hashed password and salt as strings and return them
-    hashed_password = "sha256$" + binascii.hexlify(salt_bytes).decode("utf-8") + "$" + binascii.hexlify(hashed_password_bytes).decode("utf-8")
+    hashed_password = "sha256$" + salt + "$" + binascii.hexlify(hashed_password_bytes).decode("utf-8")
 
     logger.info(f'Voici le resultat de la variable hashed_password : {hashed_password}')
     
     return hashed_password
 
-def compare_hashed_passwords(db_hash, password, salt):
-    logger.info(f'db_hash (compare_hashed_passwords): {db_hash}')
+# La fonction pour comparer le hash de mot passe saisie avec le mot de passe de la base de données
+def compare_hashed_passwords(hashed_password, password, salt):
+    # Parse the hashed password string
+    parts = hashed_password.split("$")
+    salt = parts[1]
+    logger.info(f'Voici le salt de la fonction compare_hashed_passwords : {salt}')
+    
+    # Hash the entered password with the same salt as the stored password
+    entered_password_hash = hash_password(password, salt)
+    
+    # Compare the two hashed passwords
+    return entered_password_hash == hashed_password
 
-    # hasher le mot de passe fourni avec le même salt que le hash enregistré
-    hashed_password = hash_password(password, salt)
-    logger.info(f'compare_hashed_passwords({db_hash}, {password}, {salt}): {hashed_password}')
-
-    # comparer les deux hashes
-    if hashed_password == db_hash:
-        logger.info('Le mot de passe est correct (compare_hashed_passwords)')
-        return True
-    else:
-        logger.info('Le mot de passe est incorrect (compare_hashed_passwords)')
-        return False
-
-def validate_test(username, password):
+# La fonction pour valider que l'utilisation est identifié avec mot de passe
+def validate_user(username, password):
     conn = connect()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute('SELECT * FROM admin WHERE username = %s', (username,))
     user = cursor.fetchone()
     cursor.close()
-    conn.close()
 
     if user is not None:
-        if user['password'] == password:
-            session['username'] = username
-            session['isAuthenticated'] = True
+        db_hash = user['password']
+        salt = db_hash.split('$')[1]
+        session['username'] = username
+        session['isAuthenticated'] = True
+        logger.info(f'Utilisateur trouvé (database.py): {user}')
+        if compare_hashed_passwords(db_hash, password, salt):
             logger.info(f'Utilisateur trouvé (database.py): {user}')
+            conn.close()
             return user
         else:
             logger.info(f'Le mot de passe ne correspond pas (database.py): {password}')
+            conn.close()
             return None
     else:
         logger.info(f'Utilisateur non trouvé (database.py): {username}')
+        conn.close()
         return None
-
-# def validate_user(username, password):
-#     conn = connect()
-#     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-#     cursor.execute('SELECT * FROM admin WHERE username = %s', (username,))
-#     user = cursor.fetchone()
-#     cursor.close()
-#     conn.close()
-
-#     if user is not None:
-#         db_hash = user['password']
-#         salt = db_hash.split('$')[1]
-#         if compare_hashed_passwords(db_hash, password, salt):
-#             logger.info(f'Utilisateur trouvé (database.py): {user}')
-#             return user
-#         else:
-#             logger.info(f'Le mot de passe ne correspond pas (database.py): {password}')
-#             return None
-#     else:
-#         logger.info(f'Utilisateur non trouvé (database.py): {username}')
-#         return None
-
-# # Pour tester la fonction validate_user
-# # Remplacez "votre_nom_utilisateur" par votre nom d'utilisateur valide dans la base de données
-# username = 'david'
-# # Remplacez "votre_mot_de_passe" par le mot de passe correspondant à cet utilisateur dans la base de données
-# password = "sha256$31323334$d84464181f7f019f3fb10e6bbd06f543d7ac84c4f8e360ebb9402a472ab30ebc"
-
-# # valider l'utilisateur
-# user = validate_user(username, password)
-
-# # afficher le résultat de la validation
-# if user is not None:
-#     print(f"L'utilisateur {username} a ete valide avec succes.")
-# else:
-#     print(f"Impossible de valider l'utilisateur {username}.")
 
 # Récupération des catégories
 def get_categories():
@@ -189,7 +152,6 @@ def get_promotions():
     conn.close()
     return promotions
 
-
 # Récupération d'un produit en fonction de son id
 def get_product(id):
     conn = connect()
@@ -199,7 +161,6 @@ def get_product(id):
     cursor.close()
     conn.close()
     return product
-
 
 # Récupération d'une promotion en fonction de son id
 def get_promotion(id):
@@ -211,7 +172,6 @@ def get_promotion(id):
     conn.close()
     return promotion
 
-
 # Création d'une catégorie
 def create_category(category):
     conn = connect()
@@ -220,7 +180,6 @@ def create_category(category):
     conn.commit() 
     cursor.close()
     conn.close()
-
 
 # Création d'un produit
 def create_product(product):
@@ -255,7 +214,8 @@ def create_promotion(promotion):
     conn.commit() 
     cursor.close()
     conn.close()
-    
+
+# Création d'une promotion avec la sélection d'un produit    
 def create_promotion_with_product(promotion, produit):
     conn = connect()
     cursor = conn.cursor()
@@ -293,7 +253,6 @@ def create_promotion_with_product(promotion, produit):
     conn.close()
     return promotion_id
 
-
 # Suppression d'un produit en fonction de son id
 def delete_product(id):
     conn = connect()
@@ -326,6 +285,7 @@ def update_product(id, data):
     cursor.close()
     conn.close()
 
+# Mise à jour d'une promotion selon son produit
 def update_promotion_with_product(idpromotion, promotion, idproduit):
     conn = connect()
     cursor = conn.cursor()
@@ -346,7 +306,7 @@ def update_promotion_with_product(idpromotion, promotion, idproduit):
     cursor.close()
     conn.close()
 
-
+# Suppression d'une promotion
 def delete_promotion(id):
     conn = connect()
     cursor = conn.cursor()
