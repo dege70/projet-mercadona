@@ -42,5 +42,5 @@ Le front-end de l'application est construit avec React et utilise une architectu
 
 Le back-end de l'application est construit avec Flask et utilise une architecture en couches. Le code est organisé en modules en fonction de leur rôle dans l'application, tels que l'authentification, la gestion des produits et des promotions, et la gestion de la base de données.
 
-Contact
+## Contact
 Si vous avez des questions ou des commentaires sur cette application, n'hésitez pas à me contacter.
