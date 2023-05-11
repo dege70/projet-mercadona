@@ -31,11 +31,11 @@ logger.setLevel(logging.DEBUG)
 # Connexion à la base de données
 def connect():
     conn = psycopg2.connect(
-        user="pxnuyiidetfjxu",
-        password="80011ba777c6f8e2256ce4d9a65fe47f47e5cebf120a2c0837e3abd072904f98",
+        user="dizxjeenrwboop",
+        password="3d7d57e8337e12846b41aa6d5dddaaa3d122740ac4997332866c9bf9f3c5aa26",
         host="ec2-54-73-22-169.eu-west-1.compute.amazonaws.com",
         port="5432",
-        database="d257ultfu65rlp"
+        database="d86kvu1epdl3a0"
     )
     conn.set_session(autocommit=True)
     
