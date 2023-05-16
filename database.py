@@ -118,6 +118,78 @@ def validate_user(username, password):
         logger.info(f'Utilisateur non trouvé (database.py): {username}')
         conn.close()
         return None
+    
+# La fonction pour créer un utilisateur administrateur
+def create_admin(user):
+    conn = connect()
+    cursor = conn.cursor()
+    
+    # Générer un salt aléatoire
+    salt = os.urandom(16).hex()
+
+    # Hasher le mot de passe avec le salt
+    hashed_password = hash_password(user['password'], salt)
+    
+    # Insérer l'utilisateur dans la table utilisateur
+    cursor.execute("INSERT INTO utilisateur (username, password) VALUES (%s, %s)", (user['username'], hashed_password))
+    
+    # Insérer l'utilisateur dans la table admin
+    cursor.execute("INSERT INTO admin (username, password) VALUES (%s, %s)", (user['username'], hashed_password))
+    
+    conn.commit() 
+    cursor.close()
+    conn.close()
+    
+# La fonction pour créer un utilisateur
+def create_user(user):
+    conn = connect()
+    cursor = conn.cursor()
+    
+    # Générer un salt aléatoire
+    salt = os.urandom(16).hex()
+
+    # Hasher le mot de passe avec le salt
+    hashed_password = hash_password(user['password'], salt)
+    
+    # Insérer l'utilisateur dans la table utilisateur
+    cursor.execute("INSERT INTO utilisateur (username, password) VALUES (%s, %s)", (user['username'], hashed_password))
+    
+    conn.commit() 
+    cursor.close()
+    conn.close()
+    
+
+# Fonction pour extraire le sel du mot de passe haché
+def extract_salt_from_password(password):
+    return password.split("$")[1]
+
+# Fonction pour récupérer le hash stocké dans la base de données pour un utilisateur donné
+def get_stored_hash(username):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT password FROM utilisateur WHERE username = %s", (username,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if result:
+        return result[0]
+    else:
+        return None
+
+# Fonction pour récupérer le sel stocké dans la base de données pour un utilisateur donné
+def get_salt(username):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT password FROM utilisateur WHERE username = %s", (username,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if result:
+        hashed_password = result[0]
+        return extract_salt_from_password(hashed_password)
+    else:
+        return None
+
 
 # Récupération des catégories
 def get_categories():

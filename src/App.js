@@ -12,6 +12,9 @@ import Connect from "./containers/Admin/Connect";
 import ProductForm from "./components/Form/ProductForm";
 import CategoryForm from "./components/Form/CategoryForm";
 import PromotionForm from "./components/Form/PromotionForm";
+import UserForm from "./components/Form/UserForm";
+import CreateUserForm from "./components/Form/CreateUserForm";
+import LoginUserForm from "./containers/Auth/LoginUserForm";
 
 
 function App() {
@@ -28,6 +31,9 @@ function App() {
               <Route path="/admin/products" element={<ProductForm />} exact />
               <Route path="/admin/categories" element={<CategoryForm />} exact />
               <Route path="/admin/promotions" element={<PromotionForm />} exact />
+              <Route path="/admin/users" element={<UserForm />} exact />
+              <Route path="/creeruncompte" element={<CreateUserForm />} exact />
+              <Route path="/seconnecter" element={<LoginUserForm />} exact />
               <Route path="*" element={<Error message="404 - Page not found" />} />
             </Routes>
           </Layout> 

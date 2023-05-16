@@ -5,14 +5,16 @@ from datetime import datetime
 
 from auth import Blueprint, auth_bp, validate_login
 from database import (
-    compare_hashed_passwords, connect, create_category, create_product,
-    create_promotion, create_promotion_with_product, delete_category,
-    delete_product, delete_promotion, get_categories, get_product,
-    get_products, get_promotion, get_promotions, hash_password, update_product,
-    update_promotion, update_promotion_with_product)
+    compare_hashed_passwords, connect, create_admin, create_category,
+    create_product, create_promotion, create_promotion_with_product,
+    create_user, delete_category, delete_product, delete_promotion,
+    get_categories, get_product, get_products, get_promotion, get_promotions,
+    get_salt, get_stored_hash, hash_password, update_product, update_promotion,
+    update_promotion_with_product, extract_salt_from_password)
 from flask import Flask
 from flask import current_app as app
-from flask import (jsonify, redirect, request, send_from_directory, session, url_for)
+from flask import (jsonify, redirect, request, send_from_directory, session,
+                   url_for)
 from flask_cors import CORS
 from flask_session import Session
 from werkzeug.security import check_password_hash
@@ -35,14 +37,23 @@ logger.setLevel(logging.DEBUG)
 app = Flask(__name__, static_folder='build/static', template_folder='build')
 
 # Définir une clé secrète pour les variables de session
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+# app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+# Clé secrète pour l'espace utilisateur administrateur
+app.config['ADMIN_SESSION_SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['ADMIN_SESSION_COOKIE_NAME'] = 'admin_session'
+
+# Clé secrète pour l'espace utilisateur non-administrateur
+app.config['USER_SESSION_SECRET_KEY'] = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['USER_SESSION_COOKIE_NAME'] = 'user_session'
+
 # Initialise l'extension Flask-Session
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 # app.config['SESSION_COOKIE_SECURE'] = True
 
 # Définir une clé secrète pour les variables de session
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+# app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 # Configuration de la base de données
 app.config['DATABASE_URL'] = os.environ.get('DATABASE_URL', 'postgres://dizxjeenrwboop:3d7d57e8337e12846b41aa6d5dddaaa3d122740ac4997332866c9bf9f3c5aa26@ec2-63-34-69-123.eu-west-1.compute.amazonaws.com:5432/d86kvu1epdl3a0')
@@ -76,8 +87,17 @@ def add_header(response):
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
-    return response 
+    return response
 
+@app.before_request
+def require_loginuserform():
+    # Chemins qui ne nécessitent pas d'authentification
+    whitelist = ['/seconnecter']
+
+    # Vérification de la présence du nom d'utilisateur dans la session
+    if request.path.startswith('/catalogue') and 'username' not in session and request.path not in whitelist:
+        return redirect(url_for('loginuserform'))
+ 
 @app.before_request
 def require_login():
     # Chemins qui ne nécessitent pas d'authentification
@@ -86,7 +106,6 @@ def require_login():
     # Vérification de la présence du nom d'utilisateur dans la session
     if request.path.startswith('/admin') and 'username' not in session and request.path not in whitelist:
         return redirect(url_for('login'))
-
 
 # @app.after_request
 # def add_cookie(response):
@@ -155,17 +174,6 @@ def get_promotion_for_product(idproduit):
 def dashboard():
     return send_from_directory('build', 'index.html')
 
-@app.route('/admin-list')
-def adminlist():
-    # Vérifier si l'utilisateur est connecté
-    if 'username' in session:
-        logger.info("La session contient la clé 'username'")
-        return send_from_directory('build', 'index.html')
-    else:
-        # Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-        logger.info("Redirection vers /loginpage")
-        return redirect('/loginpage')
-
 # Route pour la page d'administration
 @app.route('/admin')
 def admin():
@@ -175,14 +183,64 @@ def admin():
         return send_from_directory('build', 'index.html')
     else:
         # Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-        logger.info("Redirection vers /loginpage")
-        return redirect('/loginpage')
+        logger.info("Redirection vers /login")
+        return redirect('/login')
 
 # Route pour la déconnexion
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect('/')
+
+# Route pour la création d'un utilisateur non-administrateur
+@app.route('/api/user/create', methods=['POST'])
+def create_user_route():
+    data = request.json
+    print(data)
+    user = {
+        'username': data['username'],
+        'password': data['password']
+    }
+    create_user(user)  # Appel à la fonction pour créer l'utilisateur non-administrateur
+    return jsonify({'message': 'Utilisateur créé avec succès !'}), 201
+
+# Route pour la création d'un utilisateur administrateur
+@app.route('/api/admin/useradmin/create', methods=['POST'])
+def create_useradmin_route():
+    data = request.json
+    print(data)
+    user = {
+        'username': data['username'],
+        'password': data['password']
+    }
+    create_admin(user)  # Appel à la fonction pour créer l'utilisateur
+    return jsonify({'message': 'Utilisateur créé avec succès !'}), 201
+
+
+@app.route('/api/user/authenticate', methods=['POST'])
+def authenticate_user_route():
+    data = request.json
+    username = data['username']
+    password = data['password']
+
+    # Récupérer le hash stocké dans la base de données pour le nom d'utilisateur fourni
+    stored_hash = get_stored_hash(username)
+
+    if stored_hash:
+        # Récupérer le sel correspondant à l'utilisateur
+        salt = get_salt(username)
+
+        if salt:
+            # Hasher le mot de passe entré par l'utilisateur avec le sel correspondant
+            hashed_password = hash_password(password, salt)
+
+            if hashed_password == stored_hash:
+                # Authentification réussie pour l'utilisateur non-administrateur
+                session['user_type'] = 'non_admin'  # Définir le type d'utilisateur
+                return jsonify({'message': 'Authentification réussie'}), 200
+
+    # Authentification échouée
+    return jsonify({'message': 'Nom d\'utilisateur ou mot de passe incorrect'}), 401
 
 # Route pour la création de produit
 @app.route('/api/admin/product/create', methods=['POST'])
