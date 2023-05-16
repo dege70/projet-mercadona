@@ -17,7 +17,12 @@ const Navigation = () => {
       </li>
       <li className={classes.NavigationItem}>
         <NavLink to="/dashboard" aria-current="page">
-          Administration
+          Espace Administrateur
+        </NavLink>
+      </li>
+      <li className={classes.NavigationItem}>
+        <NavLink to="/seconnecter" aria-current="page">
+          COMPTE
         </NavLink>
       </li>
     </ul>
