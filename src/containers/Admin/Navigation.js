@@ -6,7 +6,7 @@ import axios from "axios";
 const handleLogout = async () => {
   try {
     await axios.get("/logout");
-    localStorage.removeItem("session");
+    localStorage.removeItem("admin_session");
     window.location.replace("/");
   } catch (error) {
     console.log(error);
@@ -19,6 +19,15 @@ const Navigation = () => {
       <h1>dashboard administration</h1>
       <div className={classes.LinksContainer}>
         <ul className={classes.Ul}>
+          <li className={classes.NavItem}>
+            <NavLink
+              to={`${process.env.REACT_APP_BASE_URL}/admin/users`}
+              aria-current="page"
+              activeClassName="active"
+            >
+              Créer un utilisateur
+            </NavLink>
+          </li>
           <li className={classes.NavItem}>
             <NavLink
               to={`${process.env.REACT_APP_BASE_URL}/admin/products`}
