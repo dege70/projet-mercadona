@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('session') === 'true') {
+    if (localStorage.getItem('admin_session') === 'true') {
       navigate('/admin');
     }
   }, [navigate]);
@@ -36,7 +36,7 @@ const Login = () => {
       console.log('response.data:', response.data);
       
       if (response.data === 'Success') {
-        localStorage.setItem("session", "true");
+        localStorage.setItem("admin_session", "true");
         localStorage.setItem('username', response.config.data.username);
         navigate('/admin');
         console.log('Redirection vers /admin');
@@ -52,7 +52,7 @@ const Login = () => {
     }    
   };     
 
-  console.log('localStorage.session:', localStorage.getItem('session'));
+  console.log('localStorage.session:', localStorage.getItem('admin_session'));
   console.log('localStorage.username:', localStorage.getItem('username'));
   console.log('isLoading:', isLoading);
 
